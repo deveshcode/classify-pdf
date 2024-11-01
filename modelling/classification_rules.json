@@ -1,0 +1,231 @@
+{
+  "Compliance": {
+    "keywords": [
+      "compliance",
+      "usage",
+      "period",
+      "percentage",
+      "met",
+      "adherence",
+      "therapy",
+      "utilization",
+      "average",
+      "daily use",
+      "pressure settings",
+      "leak rate",
+      "events per hour"
+    ],
+    "structure_starts": [
+      "AirView",
+      "Compliance Report",
+      "Usage Summary",
+      "Patient Compliance Data",
+      "Therapy Report"
+    ],
+    "measurements": [
+      "cmH2O",
+      "L/min",
+      "hours/night",
+      "days/week",
+      "%",
+      "events/hour",
+      "AHI"
+    ],
+    "required_fields": [
+      "usage days",
+      "compliance percentage",
+      "average usage",
+      "therapy hours",
+      "pressure settings"
+    ],
+    "semantic_patterns": [
+      "\\d+(\\.\\d+)?\\s*hours?\\s*(per|/)\\s*(night|day)",
+      "\\d+(\\.\\d+)?\\s*%\\s*compliance",
+      "used\\s+([0-9]+)\\s+out of\\s+([0-9]+)\\s+nights?"
+    ]
+  },
+  "Sleep": {
+    "keywords": [
+      "sleep",
+      "study",
+      "apnea",
+      "diagnostic",
+      "polysomnography",
+      "rem",
+      "arousal",
+      "hypopnea",
+      "oxygen",
+      "saturation"
+    ],
+    "structure_starts": [
+      "MUSC",
+      "MEDICAL UNIVERSITY",
+      "Sleep Study Report",
+      "Polysomnography Report",
+      "Sleep Laboratory"
+    ],
+    "measurements": [
+      "cm",
+      "hours",
+      "SpO2",
+      "\u00b5V",
+      "Hz",
+      "dB",
+      "events/hour",
+      "breaths/min"
+    ],
+    "required_fields": [
+      "sleep study report",
+      "patient name",
+      "apnea index",
+      "study date",
+      "total sleep time"
+    ],
+    "semantic_patterns": [
+      "AHI\\s*[:<]?\\s*\\d+(\\.\\d+)?",
+      "Stage [N|R][1-3]:\\s*\\d+(\\.\\d+)?%",
+      "Sleep efficiency:\\s*\\d+(\\.\\d+)?%"
+    ]
+  },
+  "Order": {
+    "keywords": [
+      "order",
+      "equipment",
+      "supply",
+      "authorized",
+      "prescribed",
+      "requested",
+      "purchase",
+      "requisition",
+      "authorization"
+    ],
+    "structure_starts": [
+      "MRN",
+      "Order Date",
+      "Purchase Order",
+      "Equipment Request",
+      "Supply Order"
+    ],
+    "measurements": [],
+    "required_fields": [
+      "order",
+      "MRN",
+      "date",
+      "provider",
+      "equipment description"
+    ],
+    "semantic_patterns": [
+      "Order\\s*#?\\s*\\d+",
+      "MRN\\s*#?\\s*\\d+",
+      "Date:\\s*\\d{1,2}[-/]\\d{1,2}[-/]\\d{2,4}"
+    ]
+  },
+  "Delivery": {
+    "keywords": [
+      "delivery",
+      "receipt",
+      "equipment",
+      "supplied",
+      "received",
+      "shipment",
+      "delivered",
+      "confirmed",
+      "acceptance"
+    ],
+    "structure_starts": [
+      "DELIVERY RECEIPT",
+      "Proof of Delivery",
+      "Equipment Delivery",
+      "Delivery Confirmation"
+    ],
+    "measurements": [],
+    "required_fields": [
+      "name",
+      "equipment",
+      "delivery date",
+      "signature"
+    ],
+    "semantic_patterns": [
+      "Delivered\\s+on:\\s+\\d{1,2}[-/]\\d{1,2}[-/]\\d{2,4}",
+      "Received\\s+by:\\s+[A-Za-z\\s]+",
+      "Delivery\\s+ID:\\s*\\w+"
+    ]
+  },
+  "Physician": {
+    "keywords": [
+      "assessment",
+      "diagnosis",
+      "examination",
+      "treatment",
+      "evaluation",
+      "plan",
+      "symptoms",
+      "findings"
+    ],
+    "structure_starts": [
+      "Follow up:",
+      "Physician's Notes",
+      "Clinical Notes",
+      "Medical Assessment",
+      "Progress Notes"
+    ],
+    "measurements": [
+      "mg",
+      "kg",
+      "cm",
+      "mm Hg",
+      "bpm"
+    ],
+    "required_fields": [
+      "patient name",
+      "physician",
+      "assessment",
+      "date",
+      "diagnosis"
+    ],
+    "semantic_patterns": [
+      "Assessment:.*Plan:",
+      "Diagnosis:\\s*[A-Z][\\w\\s]+",
+      "Dr\\.\\s+[A-Za-z\\s,]+"
+    ]
+  },
+  "Prescription": {
+    "keywords": [
+      "rx",
+      "prescribed",
+      "dosage",
+      "prescription",
+      "refill",
+      "medication",
+      "dispense",
+      "pharmacy",
+      "sig"
+    ],
+    "structure_starts": [
+      "Rx:",
+      "Prescription",
+      "Medication Order",
+      "Drug Order",
+      "Script"
+    ],
+    "measurements": [
+      "MG",
+      "ML",
+      "MCG",
+      "G",
+      "Units"
+    ],
+    "required_fields": [
+      "dosage",
+      "prescription",
+      "medication name",
+      "quantity",
+      "refills"
+    ],
+    "semantic_patterns": [
+      "Take\\s+\\d+\\s+tablet\\(s\\)\\s+\\w+",
+      "Refills:\\s*\\d+",
+      "Disp:\\s*#?\\d+"
+    ]
+  }
+}
