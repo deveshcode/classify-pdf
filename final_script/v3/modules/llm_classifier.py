@@ -1,3 +1,4 @@
+from tokencost import calculate_prompt_cost, calculate_completion_cost
 from litellm import completion
 from loguru import logger
 from modules.log_config import track_time
@@ -82,8 +83,6 @@ class LLMClassifier(BaseClassifier):
             "Physician": "This document contains physician notes from a patient consultation or examination, likely including medical assessments, observations, treatment plans, and clinical findings.",
             "Prescription": "This document is a medical prescription, detailing medication names, dosages, refills, and instructions for medication usage."
         }
-
-
     
     @track_time
     def classify_document(self, text: str, file_name: str):
@@ -98,8 +97,14 @@ class LLMClassifier(BaseClassifier):
         """
         logger.info("Classifying document")
         scores = {}
+        total_cost = 0.0  # Initialize total cost
         for label, prompt in self.label_prompts.items():
             logger.info(f"Classifying document for class: {label}")
+            
+            # Calculate prompt cost
+            prompt_cost = calculate_prompt_cost(prompt, self.model_name)
+            total_cost += float(prompt_cost)
+
             response = completion(
                 model=self.model_name,
                 messages=[
@@ -107,6 +112,9 @@ class LLMClassifier(BaseClassifier):
                     {"role": "user", "content": text}
                 ]
             )
+            response_text = response.get("choices", [{}])[0].get("message", {}).get("content", "").lower()
+            completion_cost = calculate_completion_cost(response_text, self.model_name)
+            total_cost += float(completion_cost)    
             score = self.extract_confidence(response)
             scores[label] = score
 
@@ -118,29 +126,26 @@ class LLMClassifier(BaseClassifier):
         if len(high_confidence_classes) == 1:
             
             predicted_class = next(iter(high_confidence_classes))
-            if "Physician" in predicted_class:
-                predicted_class = "Physician"
-            elif "Prescription" in predicted_class:
-                predicted_class = "Prescription"
-            elif "Delivery" in predicted_class:
-                predicted_class = "Delivery"
-            elif "Sleep" in predicted_class:
-                predicted_class = "Sleep"
-            elif "Compliance" in predicted_class:
-                predicted_class = "Compliance"
-            elif "Order" in predicted_class:
-                predicted_class = "Order"
+            
+            # Define a list of valid classes
+            valid_classes = ["Physician", "Prescription", "Delivery", "Sleep", "Compliance", "Order"]
+
+            # Set predicted_class to the matching class name if it exists in predicted_class
+            predicted_class = next((cls for cls in valid_classes if cls in predicted_class), predicted_class)
+
             confidence = high_confidence_classes[predicted_class]
             logger.info(f"Predicted Class: {predicted_class}, Confidence: {confidence}")
         elif len(high_confidence_classes) == 0:
             # Use few-shot example classification with all classes
             logger.info("No high-confidence classification found, using few-shot example classification")
             high_conf_classes = {label: 0.0 for label in self.label_prompts.keys()}
-            predicted_class, confidence = self.classify_with_few_shot(text, high_conf_classes)
+            predicted_class, confidence, few_shot_cost = self.classify_with_few_shot(text, high_conf_classes)
+            total_cost += few_shot_cost
         elif len(high_confidence_classes) > 1:
             # Use few-shot example classification
             logger.info("Multiple high-confidence classifications found, using few-shot example classification")
-            predicted_class, confidence = self.classify_with_few_shot(text, high_confidence_classes)
+            predicted_class, confidence, few_shot_cost = self.classify_with_few_shot(text, high_confidence_classes)
+            total_cost += few_shot_cost
         else:
             logger.info("No high-confidence classifications found, defaulting to 'notsure'")
             predicted_class = "notsure"
@@ -148,20 +153,10 @@ class LLMClassifier(BaseClassifier):
         
         # Save classification result
         logger.info(f"Saving classification result for file: {file_name}")
-        # doc = session.query(Document).filter_by(file_name=file_name).first()
-        # if doc is None:
-        #     # Option 1: Create a new record if it doesn't exist
-        #     doc = Document(file_name=file_name)
-        #     session.add(doc)
-        #     session.commit()
-            
-        # # Now update the document as needed
-        # doc.classified_category = predicted_class
-        # doc.high_confidence_classes = high_confidence_classes
-        # doc.confidence = confidence
-        # session.commit()
-
-        return predicted_class, confidence, high_confidence_classes
+        logger.info(f"Total cost: {total_cost}")
+        logger.info(f"High confidence classes: {high_confidence_classes}")
+        logger.info(f"Predicted class: {predicted_class}, Confidence: {confidence}")
+        return predicted_class, confidence, high_confidence_classes, total_cost
 
     def classify_with_few_shot(self, text: str, high_conf_classes: Dict[str, float]) -> Tuple[str, float, Dict[str, float]]:
         """
@@ -174,6 +169,7 @@ class LLMClassifier(BaseClassifier):
         Returns:
             Tuple of (predicted_class, confidence)
         """
+        total_cost = 0.0  # Initialize total cost
         logger.info("Classifying document with few-shot examples")
         # Generate few-shot examples for high-confidence classes
         few_shot_examples = "\n\n".join(self.examples[label] for label in high_conf_classes.keys())
@@ -185,6 +181,10 @@ class LLMClassifier(BaseClassifier):
         Document: "{text}"
         """
 
+        # Calculate prompt cost
+        prompt_cost = calculate_prompt_cost(prompt, self.model_name)
+        total_cost += float(prompt_cost)
+
         # Make the single API call for this document with few-shot examples
         response = completion(
             model=self.model_name,
@@ -193,21 +193,16 @@ class LLMClassifier(BaseClassifier):
 
         # Parse the response to extract the predicted class
         response_text = response.get("choices", [{}])[0].get("message", {}).get("content", "")
-        # predicted_class, confidence = self.extract_class_and_confidence(response_text)
-        if "Physician" in response_text:
-            predicted_class = "Physician"
-        elif "Prescription" in response_text:
-            predicted_class = "Prescription"
-        elif "Delivery" in response_text:
-            predicted_class = "Delivery"
-        elif "Sleep" in response_text:
-            predicted_class = "Sleep"
-        elif "Compliance" in response_text:
-            predicted_class = "Compliance"
-        elif "Order" in response_text:
-            predicted_class = "Order"
+        completion_cost = calculate_completion_cost(response_text, self.model_name)
+        total_cost += float(completion_cost)
 
-        return predicted_class, 0.9
+        # Define a list of valid classes
+        valid_classes = ["Physician", "Prescription", "Delivery", "Sleep", "Compliance", "Order"]
+
+        # Set predicted_class to the matching class name if it exists in predicted_class
+        predicted_class = next((cls for cls in valid_classes if cls in response_text), predicted_class)
+        
+        return predicted_class, 0.9, total_cost
 
     def extract_confidence(self, response: dict) -> float:
         """
@@ -225,4 +220,5 @@ class LLMClassifier(BaseClassifier):
         else:
             confidence = 0.0
         return confidence
+
 

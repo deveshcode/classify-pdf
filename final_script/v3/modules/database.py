@@ -2,8 +2,9 @@ import json
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from loguru import logger
+from config.base_config import BaseConfig
 
-DATABASE_URL = "sqlite:///results.db"
+DATABASE_URL = BaseConfig.DATABASE_URL
 engine = create_engine(DATABASE_URL)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
@@ -20,6 +21,7 @@ class Document(Base):
     confidence = Column(Float)
     high_confidence_classes = Column(Text)
     process_metadata = Column(Text)
+    ground_truth = Column(String)  # Store the ground truth label
 
 Base.metadata.create_all(engine)
 

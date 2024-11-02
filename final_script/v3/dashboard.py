@@ -6,11 +6,12 @@ from sklearn.metrics import classification_report, accuracy_score, roc_auc_score
 import matplotlib.pyplot as plt
 import json
 import plotly.express as px
+from config.base_config import BaseConfig
 
 st.set_page_config(page_title="Document Classification Dashboard", layout="wide")
 
 # Database setup
-DATABASE_URL = "sqlite:///results.db"
+DATABASE_URL = BaseConfig.DATABASE_URL
 engine = create_engine(DATABASE_URL)
 
 # Load data from SQLite database

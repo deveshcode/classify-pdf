@@ -53,8 +53,8 @@ def process_pdfs(path):
         cleaned_text, clean_time = refined_clean_text(raw_text)
         process_metadata["Text Cleaning"] = {"time": clean_time}
 
-        (predicted_class, confidence, high_conf_classes), classify_time = classifier.classify_document(cleaned_text, file_name)
-        process_metadata["Classification"] = {"time": classify_time}
+        (predicted_class, confidence, high_conf_classes, classify_cost), classify_time = classifier.classify_document(cleaned_text, file_name)
+        process_metadata["Classification"] = {"time": classify_time, "cost": classify_cost}
 
         save_processing_data(
             file_name,

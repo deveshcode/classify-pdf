@@ -11,4 +11,5 @@ class BaseConfig:
     LLM_COST_PER_TOKEN = 0.0004
     SECRET_KEY = os.getenv("SECRET_KEY", "default_secret")
     API_TIMEOUT = 30  # seconds
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///results_v1.db")
+    CLAIM_LOCATION = os.getenv("CLAIM_LOCATION", "/Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files")
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///results_v3.db")

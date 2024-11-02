@@ -1,3 +1,5 @@
+.DS_Store
+*.db
 *.log
 data_files/
 Todo.txt
