@@ -1,0 +1,25 @@
+2024-11-01 19:48:03.911 | INFO     | modules.data_processor:get_pdf_files:17 - Checking if path is a file or directory: /Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files/Compliance Report 1.pdf
+2024-11-01 19:48:03.911 | INFO     | modules.data_processor:get_pdf_files:19 - Path is a PDF file: /Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files/Compliance Report 1.pdf
+2024-11-01 19:48:03.911 | INFO     | modules.llm_classifier:create_class_prompts:76 - Creating class prompts
+2024-11-01 19:48:03.911 | INFO     | modules.data_processor:process_pdfs:45 - Processing file: /Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files/Compliance Report 1.pdf
+2024-11-01 19:48:03.911 | INFO     | modules.data_processor:extract_text_ocr:30 - Extracting text from PDF file: /Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files/Compliance Report 1.pdf
+2024-11-01 19:48:04.962 | INFO     | modules.data_processor:extract_text_ocr:34 - Converted PDF to 4 images
+2024-11-01 19:48:10.168 | INFO     | modules.data_processor:extract_text_ocr:36 - Extracted text from image successfully
+2024-11-01 19:48:10.171 | INFO     | modules.log_config:wrapper:14 - Time taken for extract_text_ocr: 6.26 seconds
+2024-11-01 19:48:10.171 | INFO     | modules.data_cleaning:refined_clean_text:10 - Beginning text cleaning
+2024-11-01 19:48:10.171 | INFO     | modules.data_cleaning:refined_clean_text:40 - Text cleaning completed
+2024-11-01 19:48:10.172 | INFO     | modules.log_config:wrapper:14 - Time taken for refined_clean_text: 0.00 seconds
+2024-11-01 19:48:10.172 | INFO     | modules.llm_classifier:classify_document:99 - Classifying document
+2024-11-01 19:48:10.172 | INFO     | modules.llm_classifier:classify_document:102 - Classifying document for class: Compliance
+2024-11-01 19:48:10.605 | INFO     | modules.llm_classifier:classify_document:102 - Classifying document for class: Sleep
+2024-11-01 19:48:10.940 | INFO     | modules.llm_classifier:classify_document:102 - Classifying document for class: Order
+2024-11-01 19:48:11.256 | INFO     | modules.llm_classifier:classify_document:102 - Classifying document for class: Delivery
+2024-11-01 19:48:11.588 | INFO     | modules.llm_classifier:classify_document:102 - Classifying document for class: Physician
+2024-11-01 19:48:12.160 | INFO     | modules.llm_classifier:classify_document:102 - Classifying document for class: Prescription
+2024-11-01 19:48:12.468 | INFO     | modules.llm_classifier:classify_document:115 - High confidence classes: {'Compliance': 0.95}
+2024-11-01 19:48:12.469 | INFO     | modules.llm_classifier:classify_document:134 - Predicted Class: Compliance, Confidence: 0.95
+2024-11-01 19:48:12.469 | INFO     | modules.llm_classifier:classify_document:150 - Saving classification result for file: Compliance Report 1.pdf
+2024-11-01 19:48:12.469 | INFO     | modules.log_config:wrapper:14 - Time taken for classify_document: 2.30 seconds
+2024-11-01 19:48:12.483 | INFO     | modules.data_processor:process_pdfs:69 - File: /Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files/Compliance Report 1.pdf, Predicted Class: Compliance, Confidence: 0.95
+2024-11-01 19:48:12.483 | INFO     | modules.data_processor:process_pdfs:70 - Process Metadata: {'OCR': {'time': 6.259454250335693}, 'Text Cleaning': {'time': 0.0008666515350341797}, 'Classification': {'time': 2.297452926635742}}
+2024-11-01 19:48:12.483 | INFO     | modules.log_config:wrapper:14 - Time taken for process_pdfs: 8.57 seconds

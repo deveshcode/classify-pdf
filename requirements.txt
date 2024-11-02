@@ -1,2 +1,14 @@
 pymupdf4llm
 python-dotenv
+streamlit
+pandas
+seaborn
+matplotlib
+plotly
+loguru
+pydantic
+sqlalchemy
+pytest
+scikit-learn
+pytesseract
+pdf2image
