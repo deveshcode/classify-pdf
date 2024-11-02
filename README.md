@@ -59,8 +59,6 @@ Distributed under the MIT License. See LICENSE for more information.
 ## Project Team
 Name | Contribution %| 
 --- |--- | 
-Devesh Surve | 33% |
-Aamod Thakur | 34% |
-Mrunal Malekar | 33% |
+Devesh Surve | 100% |
 
 
