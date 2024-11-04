@@ -126,13 +126,18 @@ class LLMClassifier(BaseClassifier):
         if len(high_confidence_classes) == 1:
             
             predicted_class = next(iter(high_confidence_classes))
-            
-            # Define a list of valid classes
-            valid_classes = ["Physician", "Prescription", "Delivery", "Sleep", "Compliance", "Order"]
-
-            # Set predicted_class to the matching class name if it exists in predicted_class
-            predicted_class = next((cls for cls in valid_classes if cls in predicted_class), predicted_class)
-
+            if "Physician" in predicted_class:
+                predicted_class = "Physician"
+            elif "Prescription" in predicted_class:
+                predicted_class = "Prescription"
+            elif "Delivery" in predicted_class:
+                predicted_class = "Delivery"
+            elif "Sleep" in predicted_class:
+                predicted_class = "Sleep"
+            elif "Compliance" in predicted_class:
+                predicted_class = "Compliance"
+            elif "Order" in predicted_class:
+                predicted_class = "Order"
             confidence = high_confidence_classes[predicted_class]
             logger.info(f"Predicted Class: {predicted_class}, Confidence: {confidence}")
         elif len(high_confidence_classes) == 0:
@@ -195,13 +200,20 @@ class LLMClassifier(BaseClassifier):
         response_text = response.get("choices", [{}])[0].get("message", {}).get("content", "")
         completion_cost = calculate_completion_cost(response_text, self.model_name)
         total_cost += float(completion_cost)
+        # predicted_class, confidence = self.extract_class_and_confidence(response_text)
+        if "Physician" in response_text:
+            predicted_class = "Physician"
+        elif "Prescription" in response_text:
+            predicted_class = "Prescription"
+        elif "Delivery" in response_text:
+            predicted_class = "Delivery"
+        elif "Sleep" in response_text:
+            predicted_class = "Sleep"
+        elif "Compliance" in response_text:
+            predicted_class = "Compliance"
+        elif "Order" in response_text:
+            predicted_class = "Order"
 
-        # Define a list of valid classes
-        valid_classes = ["Physician", "Prescription", "Delivery", "Sleep", "Compliance", "Order"]
-
-        # Set predicted_class to the matching class name if it exists in predicted_class
-        predicted_class = next((cls for cls in valid_classes if cls in response_text), predicted_class)
-        
         return predicted_class, 0.9, total_cost
 
     def extract_confidence(self, response: dict) -> float:

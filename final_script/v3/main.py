@@ -9,10 +9,10 @@ if environment == "development":
 else:
     from config.base_config import BaseConfig as Config
 
-Config.CLAIM_LOCATION = "/Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files"
+Config.CLAIM_LOCATION = "/Users/deveshsurve/UNIVERSITY/PROJECT/classify-pdf/data_files/Compliance Report 1.pdf"
 
 def main():
-    path_to_process = Config.CLAIM_LOCATION + "/Compliance Report 1.pdf"
+    path_to_process = Config.CLAIM_LOCATION 
     print(f"Running {Config.APP_NAME} with {environment} configuration")
     process_pdfs(path_to_process)
 
