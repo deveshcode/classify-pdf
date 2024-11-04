@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import json
 import plotly.express as px
 from config.base_config import BaseConfig
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="Document Classification Dashboard", layout="wide")
 
@@ -90,3 +91,91 @@ with col4:
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.write("No misclassifications found!")
+
+# Add a new row for process metadata visualizations
+st.markdown("---")
+st.subheader("Process Metadata Analysis")
+col5, col6 = st.columns(2)
+
+with col5:
+    st.subheader("Processing Time Distribution")
+
+    # Extract processing times
+    processing_times = []
+    for metadata_str in df['process_metadata']:
+        try:
+            if metadata_str and isinstance(metadata_str, str):
+                metadata = json.loads(metadata_str)
+                times = {
+                    'OCR': metadata.get('OCR', {}).get('time', 0),
+                    'Text Cleaning': metadata.get('Text Cleaning', {}).get('time', 0),
+                    'Classification': metadata.get('Classification', {}).get('time', 0)
+                }
+                processing_times.append(times)
+            elif isinstance(metadata_str, dict):  # If it's already a dictionary
+                times = {
+                    'OCR': metadata_str.get('OCR', {}).get('time', 0),
+                    'Text Cleaning': metadata_str.get('Text Cleaning', {}).get('time', 0),
+                    'Classification': metadata_str.get('Classification', {}).get('time', 0)
+                }
+                processing_times.append(times)
+        except (json.JSONDecodeError, AttributeError) as e:
+            st.warning(f"Skipping invalid metadata entry: {e}")
+            continue
+    
+    time_df = pd.DataFrame(processing_times)
+    
+    # Create box plot for processing times
+    fig_box = go.Figure()
+    for column in time_df.columns:
+        fig_box.add_trace(go.Box(y=time_df[column], name=column))
+    
+    fig_box.update_layout(
+        title="Distribution of Processing Times by Stage",
+        yaxis_title="Time (seconds)",
+        showlegend=True
+    )
+    st.plotly_chart(fig_box, use_container_width=True)
+    
+    # Add average processing time metrics
+    st.write("Average Processing Times:")
+    for column in time_df.columns:
+        st.metric(f"{column} Avg Time", f"{time_df[column].mean():.2f}s")
+
+with col6:
+    st.subheader("Cost Analysis")
+    
+    costs = []
+    for metadata_str in df['process_metadata']:
+        try:
+            if isinstance(metadata_str, str):
+                metadata = json.loads(metadata_str)
+            else:
+                metadata = metadata_str
+            cost = metadata.get('Classification', {}).get('cost', 0)
+            costs.append(cost)
+        except (json.JSONDecodeError, AttributeError) as e:
+            costs.append(0)
+    # Create histogram for cost distribution
+    fig_cost = px.histogram(
+        x=costs,
+        title="Distribution of Classification Costs",
+        labels={'x': 'Cost ($)', 'y': 'Count'},
+        color_discrete_sequence=["#00CC96"]
+    )
+    st.plotly_chart(fig_cost, use_container_width=True)
+    
+    # Add cost metrics
+    total_cost = sum(costs)
+    avg_cost = total_cost / len(costs) if costs else 0
+    st.metric("Total Classification Cost", f"${total_cost:.4f}")
+    st.metric("Average Cost per Document", f"${avg_cost:.4f}")
+    
+    # Create timeline plot of processing times
+    timeline_df = pd.DataFrame(processing_times).cumsum()
+    fig_timeline = px.line(
+        timeline_df,
+        title="Cumulative Processing Time by Stage",
+        labels={'value': 'Cumulative Time (s)', 'variable': 'Stage'},
+    )
+    st.plotly_chart(fig_timeline, use_container_width=True)

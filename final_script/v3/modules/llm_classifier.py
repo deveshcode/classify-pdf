@@ -1,7 +1,7 @@
 from tokencost import calculate_prompt_cost, calculate_completion_cost
 from litellm import completion
 from loguru import logger
-from modules.log_config import track_time
+from .log_config import track_time
 from typing import Dict, Tuple
 
 class BaseClassifier:

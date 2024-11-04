@@ -2,7 +2,7 @@ import json
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from loguru import logger
-from config.base_config import BaseConfig
+from ..config.base_config import BaseConfig
 
 DATABASE_URL = BaseConfig.DATABASE_URL
 engine = create_engine(DATABASE_URL)

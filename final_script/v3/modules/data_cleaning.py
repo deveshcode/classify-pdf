@@ -1,6 +1,6 @@
 import re
 from loguru import logger
-from modules.log_config import track_time
+from .log_config import track_time
 
 @track_time
 def refined_clean_text(text):

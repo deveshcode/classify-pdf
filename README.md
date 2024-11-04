@@ -40,6 +40,11 @@ A comprehensive tool for analyzing, classifying and extracting insights from PDF
     make dash
     ``` 
 
+6. To run the tests:
+    ```bash
+    make test
+    ```
+
 ## Tools used
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)

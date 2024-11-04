@@ -1,12 +1,12 @@
 import os
 from loguru import logger
-from modules.database import save_processing_data
-from modules.llm_classifier import LLMClassifier
-from modules.data_cleaning import refined_clean_text
-from modules.log_config import track_time
+from .database import save_processing_data
+from .llm_classifier import LLMClassifier
+from .data_cleaning import refined_clean_text
+from .log_config import track_time
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from config.base_config import BaseConfig
+from ..config.base_config import BaseConfig
 
 DATABASE_URL = BaseConfig.DATABASE_URL
 engine = create_engine(DATABASE_URL)
